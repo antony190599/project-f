@@ -3,7 +3,16 @@ const multer = require('multer');
 const path = require('path');
 const app = express();
 
-const upload = multer({ dest: path.join(__dirname, 'uploads') });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
 
 app.post('/upload', upload.single('audio'), (req, res) => {
   if (!req.file) {
